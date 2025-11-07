@@ -5,7 +5,7 @@ const port = process.env.PORT || 8080;
 app.get('/', (req, res) => {
   res.send(`
     <html>
-      <head><title>Janine's Hospital Demo - Secured by Raj -  Red Hat Summit</title></head>
+      <head><title>Janine's Hospital Demo - Secured by Raj and Jens -  Red Hat Summit</title></head>
       <body style="font-family: Arial; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
         <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
           <h1 style="color: #333; margin-bottom: 20px;">🏥 Janine's Hospital Demo</h1>
