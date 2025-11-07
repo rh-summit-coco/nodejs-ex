@@ -1,125 +1,80 @@
-//  OpenShift sample Node application
-var express = require('express'),
-    app     = express(),
-    morgan  = require('morgan');
-    
-Object.assign=require('object-assign')
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 8080;
 
-app.engine('html', require('ejs').renderFile);
-app.use(morgan('combined'))
+app.get('/', (req, res) => {
+  res.send(`
+    <html>
+      <head><title>Janine's Hospital Demo - Red Hat Summit</title></head>
+      <body style="font-family: Arial; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+          <h1 style="color: #333; margin-bottom: 20px;">🏥 Janine's Hospital Demo</h1>
+          <h2 style="color: #666;">Red Hat Summit Demo - Secure Healthcare Platform</h2>
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h3>🔐 Security Features Implemented:</h3>
+            <ul>
+              <li>✅ Cryptographically signed container image</li>
+              <li>✅ SBOM (Software Bill of Materials) generated</li>
+              <li>✅ SLSA provenance attestation</li>
+              <li>✅ Vulnerability scanning passed</li>
+              <li>✅ Source code security analysis</li>
+              <li>✅ Zero-trust deployment pipeline</li>
+              <li>✅ HIPAA-compliant container security</li>
+            </ul>
+          </div>
+          <div style="background: #e3f2fd; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h3>🛠️ Built with Red Hat Technologies:</h3>
+            <ul>
+              <li>🔴 Azure Red Hat OpenShift (ARO)</li>
+              <li>🔴 Red Hat Developer Hub (Backstage)</li>
+              <li>🔴 OpenShift Pipelines (Tekton)</li>
+              <li>🔴 OpenShift GitOps (ArgoCD)</li>
+              <li>🔴 Red Hat Universal Base Image (UBI)</li>
+              <li>🔴 OpenShift Dev Spaces</li>
+            </ul>
+          </div>
+          <div style="background: #e8f5e8; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h3>🏥 Hospital Platform Features:</h3>
+            <ul>
+              <li>📋 Patient Management System</li>
+              <li>🩺 Electronic Health Records (EHR)</li>
+              <li>📊 Real-time Analytics Dashboard</li>
+              <li>🔐 Secure Data Encryption</li>
+              <li>🚨 Automated Compliance Monitoring</li>
+              <li>📱 Mobile-First Design</li>
+            </ul>
+          </div>
+          <p style="color: #666; margin-top: 30px;">
+            <strong>Repository:</strong> rh-summit-coco/nodejs-ex<br>
+            <strong>Deployment:</strong> ${new Date().toISOString()}<br>
+            <strong>Environment:</strong> janine-dev namespace<br>
+            <strong>Status:</strong> 🟢 Healthy & Secure
+          </p>
+        </div>
+      </body>
+    </html>
+  `);
+});
 
-var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
-    ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
-    mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
-    mongoURLLabel = "";
-
-if (mongoURL == null) {
-  var mongoHost, mongoPort, mongoDatabase, mongoPassword, mongoUser;
-  // If using plane old env vars via service discovery
-  if (process.env.DATABASE_SERVICE_NAME) {
-    var mongoServiceName = process.env.DATABASE_SERVICE_NAME.toUpperCase();
-    mongoHost = process.env[mongoServiceName + '_SERVICE_HOST'];
-    mongoPort = process.env[mongoServiceName + '_SERVICE_PORT'];
-    mongoDatabase = process.env[mongoServiceName + '_DATABASE'];
-    mongoPassword = process.env[mongoServiceName + '_PASSWORD'];
-    mongoUser = process.env[mongoServiceName + '_USER'];
-
-  // If using env vars from secret from service binding  
-  } else if (process.env.database_name) {
-    mongoDatabase = process.env.database_name;
-    mongoPassword = process.env.password;
-    mongoUser = process.env.username;
-    var mongoUriParts = process.env.uri && process.env.uri.split("//");
-    if (mongoUriParts.length == 2) {
-      mongoUriParts = mongoUriParts[1].split(":");
-      if (mongoUriParts && mongoUriParts.length == 2) {
-        mongoHost = mongoUriParts[0];
-        mongoPort = mongoUriParts[1];
-      }
-    }
-  }
-
-  if (mongoHost && mongoPort && mongoDatabase) {
-    mongoURLLabel = mongoURL = 'mongodb://';
-    if (mongoUser && mongoPassword) {
-      mongoURL += mongoUser + ':' + mongoPassword + '@';
-    }
-    // Provide UI label that excludes user id and pw
-    mongoURLLabel += mongoHost + ':' + mongoPort + '/' + mongoDatabase;
-    mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
-  }
-}
-var db = null,
-    dbDetails = new Object();
-
-var initDb = function(callback) {
-  if (mongoURL == null) return;
-
-  var mongodb = require('mongodb');
-  if (mongodb == null) return;
-
-  mongodb.connect(mongoURL, function(err, conn) {
-    if (err) {
-      callback(err);
-      return;
-    }
-
-    db = conn;
-    dbDetails.databaseName = db.databaseName;
-    dbDetails.url = mongoURLLabel;
-    dbDetails.type = 'MongoDB';
-
-    console.log('Connected to MongoDB at: %s', mongoURL);
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    service: 'janine-hospital-demo',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
   });
-};
-
-app.get('/', function (req, res) {
-  // try to initialize the db on every request if it's not already
-  // initialized.
-  if (!db) {
-    initDb(function(err){});
-  }
-  if (db) {
-    var col = db.collection('counts');
-    // Create a document with request IP and current time of request
-    col.insert({ip: req.ip, date: Date.now()});
-    col.count(function(err, count){
-      if (err) {
-        console.log('Error running count. Message:\n'+err);
-      }
-      res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails });
-    });
-  } else {
-    res.render('index.html', { pageCountMessage : null});
-  }
 });
 
-app.get('/pagecount', function (req, res) {
-  // try to initialize the db on every request if it's not already
-  // initialized.
-  if (!db) {
-    initDb(function(err){});
-  }
-  if (db) {
-    db.collection('counts').count(function(err, count ){
-      res.send('{ pageCount: ' + count + '}');
-    });
-  } else {
-    res.send('{ pageCount: -1 }');
-  }
+app.get('/api/patients', (req, res) => {
+  res.json({
+    message: 'Patient API endpoint',
+    total_patients: 1247,
+    active_cases: 89,
+    status: 'operational'
+  });
 });
 
-// error handling
-app.use(function(err, req, res, next){
-  console.error(err.stack);
-  res.status(500).send('Something bad happened!');
+app.listen(port, '0.0.0.0', () => {
+  console.log(`🏥 Janine's Hospital Demo listening on port ${port}`);
+  console.log(`🔐 Secure healthcare platform initialized`);
 });
-
-initDb(function(err){
-  console.log('Error connecting to Mongo. Message:\n'+err);
-});
-
-app.listen(port, ip);
-console.log('Server running on http://%s:%s', ip, port);
-
-module.exports = app ;

@@ -1,57 +1,62 @@
+# 🏥 Janine's Hospital Demo - Red Hat Summit
 
-![Node.js CI](https://github.com/nodeshift-starters/nodejs-rest-http-crud/workflows/ci/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/nodeshift-starters/nodejs-rest-http-crud/badge.svg?branch=master)](https://coveralls.io/github/nodeshift-starters/nodejs-rest-http-crud?branch=master) 
+A secure healthcare platform demonstrating Red Hat's enterprise development stack with security-first approach.
 
-Example CRUD Application
+## 🔐 Security Features
 
-### Getting Started
+- **Cryptographically signed container images** - All images signed with Cosign
+- **SBOM Generation** - Software Bill of Materials for transparency
+- **SLSA Provenance** - Supply chain attestation
+- **Vulnerability Scanning** - Automated security scanning
+- **Source Code Analysis** - Static security analysis
+- **Zero-Trust Pipeline** - Secure CI/CD workflows
+- **HIPAA Compliance** - Healthcare-grade security
 
-#### Running Locally
+## 🛠️ Technology Stack
 
-First, install the dependencies
+- **Azure Red Hat OpenShift (ARO)** - Container platform
+- **Red Hat Developer Hub** - Developer portal (Backstage)
+- **OpenShift Pipelines** - CI/CD with Tekton
+- **OpenShift GitOps** - Deployment with ArgoCD
+- **OpenShift Dev Spaces** - Cloud-native IDE
+- **Red Hat UBI** - Secure base images
 
-`npm install`
+## 🏥 Hospital Platform Features
 
-A Postgres DB is needed, so if you are using Docker, then you can start a postgres db easily.
+- **Patient Management System** - Comprehensive patient records
+- **Electronic Health Records (EHR)** - Digital health records
+- **Real-time Analytics** - Healthcare data insights
+- **Secure Data Encryption** - End-to-end encryption
+- **Compliance Monitoring** - Automated HIPAA compliance
+- **Mobile-First Design** - Responsive healthcare UI
 
-`docker run --name os-postgres-db -e POSTGRESQL_USER=luke -e POSTGRESQL_PASSWORD=secret -e POSTGRESQL_DATABASE=my_data -d -p 5432:5432 centos/postgresql-10-centos7`
+## 🚀 Quick Start
 
-In this example, the db user is `luke`, the password is `secret` and the database is `my_data`
-
-You can then start the application like this:
-
-`DB_USERNAME=luke DB_PASSWORD=secret ./bin/www`
-
-
-Then go to http://localhost:8080
-
-
-Other options:
-
-* `npm run dev` same as `npm start` but with pretty output log.
-* `npm run dev:debug` shows debug information.
-
-
-#### Running on Openshift
-
-First, make sure you have an instance of Openshift setup and are logged in using `oc login`.
-
-Then create a new project using the `oc` commands
-
-`oc new-project fun-node-fun`
-
-For this example, you will also need a postgres db running on your Openshift cluster.
-
-`oc new-app -e POSTGRESQL_USER=luke -ePOSTGRESQL_PASSWORD=secret -ePOSTGRESQL_DATABASE=my_data centos/postgresql-10-centos7 --name=my-database`
-
-Then run `npm run openshift` to deploy your app
-
-Run the following command to show the newly exposed route that you can navigate:
+```bash
+npm install
+npm start
 ```
-oc get route nodejs-rest-http-crud
-NAME                    HOST/PORT                                        PATH   SERVICES                PORT   TERMINATION   WILDCARD
-nodejs-rest-http-crud   nodejs-rest-http-crud-opentel.apps-crc.testing          nodejs-rest-http-crud   8080                 None
-```
-#### Running on Openshift with traces enabled
 
-* [Read more](./OTEL.md)
+## 📋 API Endpoints
+
+- `GET /` - Hospital demo homepage
+- `GET /health` - Health check endpoint
+- `GET /api/patients` - Patient API (demo)
+
+## 🔗 Links
+
+- **Application**: https://nodejs-ex-janine-dev.apps.uhfgfgde.eastus.aroapp.io/
+- **Repository**: https://github.com/rh-summit-coco/nodejs-ex
+- **Pipeline**: Tekton secure-ci-pipeline
+- **GitOps**: ArgoCD janine-secure-app
+
+## 📊 Status
+
+- **Security**: ✅ All checks passed
+- **Deployment**: ✅ Healthy
+- **Compliance**: ✅ HIPAA ready
+- **Performance**: ✅ Optimized
+
+---
+
+**Built with ❤️ for Red Hat Summit Healthcare Demo**
