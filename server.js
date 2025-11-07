@@ -75,6 +75,6 @@ app.get('/api/patients', (req, res) => {
 });
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`🏥 Janine's Hospital Demo - secured by Raj - listening on port ${port}`);
+  console.log(`🏥 Janine's Hospital Demo listening on port ${port}`);
   console.log(`🔐 Secure healthcare platform initialized`);
 });
