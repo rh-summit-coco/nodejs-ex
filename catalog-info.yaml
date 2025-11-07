@@ -1,0 +1,29 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: nodejs-ex
+  description: Node.js example application for Red Hat Summit demo
+  annotations:
+    github.com/project-slug: rh-summit-coco/nodejs-ex
+  tags:
+    - nodejs
+    - express
+    - demo
+    - summit
+  links:
+    - url: https://github.com/rh-summit-coco/nodejs-ex
+      title: Source Code
+      icon: github
+spec:
+  type: service
+  lifecycle: experimental
+  owner: jensfr
+  system: summit-demo
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: summit-demo
+  description: Red Hat Summit demo applications
+spec:
+  owner: jensfr
