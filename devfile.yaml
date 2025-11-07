@@ -1,0 +1,88 @@
+schemaVersion: 2.2.0
+metadata:
+  name: nodejs-ex
+  displayName: "Node.js Express Example Application"
+  description: "Sample Node.js application for Red Hat Summit demo"
+  tags:
+    - nodejs
+    - express
+    - summit
+    - demo
+projects:
+  - name: nodejs-ex
+    git:
+      remotes:
+        origin: "https://github.com/rh-summit-coco/nodejs-ex.git"
+      checkoutFrom:
+        revision: main
+components:
+  # Development container
+  - name: nodejs-dev
+    container:
+      image: quay.io/devfile/universal-developer-image:ubi8-latest
+      memoryLimit: 1Gi
+      cpuLimit: 500m
+      cpuRequest: 200m
+      memoryRequest: 512Mi
+      mountSources: true
+      env:
+        - name: NODE_ENV
+          value: development
+        - name: NPM_CONFIG_PREFIX
+          value: /tmp/npm-global
+        - name: PATH
+          value: /tmp/npm-global/bin:$PATH
+      volumeMounts:
+        - name: npm
+          path: /tmp/npm-global
+      endpoints:
+        - name: nodejs-port
+          targetPort: 8080
+          exposure: public
+          protocol: http
+
+  # npm cache volume
+  - name: npm
+    volume:
+      size: 1Gi
+
+commands:
+  # Install dependencies
+  - id: install-deps
+    exec:
+      label: "Install Dependencies"
+      component: nodejs-dev
+      workingDir: ${PROJECTS_ROOT}/nodejs-ex
+      commandLine: npm install
+
+  # Start development server
+  - id: dev-run
+    exec:
+      label: "Start Development Server"
+      component: nodejs-dev
+      workingDir: ${PROJECTS_ROOT}/nodejs-ex
+      commandLine: npm start
+      group:
+        kind: run
+        isDefault: true
+
+  # Run tests
+  - id: test
+    exec:
+      label: "Run Tests"
+      component: nodejs-dev
+      workingDir: ${PROJECTS_ROOT}/nodejs-ex
+      commandLine: npm test
+
+  # Build for production
+  - id: build
+    exec:
+      label: "Build Application"
+      component: nodejs-dev
+      workingDir: ${PROJECTS_ROOT}/nodejs-ex
+      commandLine: npm run build
+
+events:
+  # Run after container starts
+  postStart:
+    - install-deps

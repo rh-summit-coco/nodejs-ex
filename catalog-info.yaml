@@ -2,28 +2,78 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: nodejs-ex
-  description: Node.js example application for Red Hat Summit demo
+  title: Node.js Express Example Application
+  description: |
+    A sample Node.js application using Express framework for Red Hat Summit demo.
+    Demonstrates secure CI/CD practices with Tekton pipelines, container image signing,
+    and GitOps deployment with ArgoCD.
   annotations:
     github.com/project-slug: rh-summit-coco/nodejs-ex
+    backstage.io/techdocs-ref: dir:.
+    argocd/app-name: janine-secure-app
+    tekton.dev/pipeline: secure-ci-pipeline
+    quay.io/repository-slug: janine-dev/nodejs-ex
   tags:
     - nodejs
     - express
-    - demo
     - summit
+    - demo
+    - tekton
+    - argocd
+    - security
   links:
     - url: https://github.com/rh-summit-coco/nodejs-ex
-      title: Source Code
+      title: Source Repository
       icon: github
+    - url: https://janine-dev-nodejs-ex.apps.uhfgfgde.eastus.aroapp.io
+      title: Application URL
+      icon: web
 spec:
   type: service
   lifecycle: experimental
-  owner: jensfr
+  owner: "jensfr"
   system: summit-demo
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: summit-demo
-  description: Red Hat Summit demo applications
+  title: Red Hat Summit Demo System
+  description: Complete demonstration system showcasing Red Hat's developer platform capabilities
 spec:
-  owner: jensfr
+  owner: "jensfr"
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: nodejs-ex-api
+  title: Node.js Express API
+  description: REST API endpoints for the Node.js Express example application
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: "jensfr"
+  system: summit-demo
+  definition: |
+    openapi: 3.0.0
+    info:
+      title: Node.js Express Example API
+      version: 1.0.0
+      description: Simple REST API for demonstration purposes
+    paths:
+      /:
+        get:
+          summary: Welcome page
+          responses:
+            '200':
+              description: Successful response
+              content:
+                text/html:
+                  schema:
+                    type: string
+      /health:
+        get:
+          summary: Health check endpoint
+          responses:
+            '200':
+              description: Application is healthy
